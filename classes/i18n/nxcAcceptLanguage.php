@@ -117,7 +117,7 @@ class nxcAcceptLanguage
     }
 
     /**
-     * Performs actual redirection
+     * Performs a redirection to proper siteaccess if needed
      *
      * @return (void)
      */
