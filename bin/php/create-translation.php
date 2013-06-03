@@ -1,7 +1,6 @@
 #!/usr/bin/env php
 <?php
 /**
- * @package nxcBMW
  * @author  Serhey Dolgushev <serhey.dolgushev@nxc.no>
  * @date    15 Nov 2011
  **/

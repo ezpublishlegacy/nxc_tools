@@ -15,7 +15,7 @@
 require 'autoload.php';
 
 $cli = eZCLI::instance();
-$script = eZScript::instance( array( 'description' => ( "Clears TBE cache" ),
+$script = eZScript::instance( array( 'description' => ( "Clears NXC cache" ),
                                      'use-session'    => false,
                                      'use-modules'    => true,
                                      'use-extensions' => true ) );
