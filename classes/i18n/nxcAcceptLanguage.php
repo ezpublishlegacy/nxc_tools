@@ -121,7 +121,7 @@ class nxcAcceptLanguage
      *
      * @return (void)
      */
-    public function redirect()
+    public function redirectToSiteAccess()
     {
         // Process redirection only if current siteaccess is default
         if ( !nxcSiteAccess::get()->isDefault() )
