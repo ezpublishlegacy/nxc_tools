@@ -123,6 +123,12 @@ class nxcAcceptLanguage
      */
     public function redirect()
     {
+        // Process redirection only if current siteaccess is default
+        if ( !nxcSiteAccess::get()->isDefault() )
+        {
+            return;
+        }
+
         $url = $this->getRedirectURL( eZSys::requestURI() );
         if ( !$url )
         {

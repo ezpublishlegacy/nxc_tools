@@ -171,7 +171,7 @@ class nxcSiteAccess
      */
     public function getRedirectURL( $uri = '' )
     {
-        $result = "/switchlanguage/to/" . $this->getName();
+        $result = "/switchlanguage/to/" . $this->getName() . $uri;
 
         $ini = eZINI::instance();
         $matchOrder = $ini->variable( 'SiteAccessSettings', 'MatchOrder' );
@@ -181,11 +181,11 @@ class nxcSiteAccess
             $d = self::findSimilarHost( eZSys::hostname(), $this->getHostList() );
             if ( $d )
             {
-                $result = eZSys::serverProtocol() . '://' . $d;
+                $result = eZSys::serverProtocol() . '://' . $d . $uri;
             }
         }
 
-        return $result . $uri;
+        return $result;
     }
 
     /**
@@ -229,6 +229,27 @@ class nxcSiteAccess
         }
 
         return $result;
+    }
+
+    /**
+     * Returns name of default siteaccess
+     *
+     * @return (string)
+     */
+    public static function getDefaultSiteAccessName()
+    {
+        $ini = eZINI::instance();
+        $result = $ini->variable( 'SiteAccessSettings', 'DefaultAccess' );
+
+        return $result;
+    }
+
+    /**
+     * @return (bool)
+     */
+    public function isDefault()
+    {
+        return $this->getName() == self::getDefaultSiteAccessName();
     }
 
 }
