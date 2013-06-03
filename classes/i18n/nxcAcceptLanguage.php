@@ -214,7 +214,7 @@ class nxcAcceptLanguage
 
             if ( $c == $lang )
             {
-                $result[] = $o->attribute( 'locale_code' );
+                $result[] = $locale;
                 break;
             }
         }
