@@ -10,7 +10,7 @@
  * Class to handle determining ez locale and its siteaccess by accept language string
  *
  * @url http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4
- * @see self::redirect()
+ * @see self::redirectToSiteAccess()
  */
 class nxcAcceptLanguage
 {
