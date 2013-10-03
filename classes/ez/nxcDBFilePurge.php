@@ -78,7 +78,7 @@ class nxcDBFilePurge
     {
         global$isQuiet, $cli;
 
-        if ( !$isQuiet ) {
+        if ( !$isQuiet && $cli ) {
             $cli->output( $msg, $addEOL );
         }
     }
