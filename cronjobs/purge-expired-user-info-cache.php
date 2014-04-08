@@ -18,8 +18,9 @@ nxcDBFilePurge::cliOutput(
           .', limit = '.(int)$limit
           .', sleep = '.(int)$sleepSeconds
 );
+$cacheDir = eZSys::cacheDirectory();
 $ini = eZINI::instance( 'nxc-tools.ini' );
-$expiryFile = $ini->variable( 'CacheClearSettings', 'ExpiryFile');
+$expiryFile = $cacheDir . '/' . $ini->variable( 'CacheClearSettings', 'ExpiryFile');
 
 $cacheFileHandler = eZClusterFileHandler::instance( $expiryFile );
 if ( $cacheFileHandler->fileExists( $cacheFileHandler->filePath ) )
@@ -30,7 +31,8 @@ if ( $cacheFileHandler->fileExists( $cacheFileHandler->filePath ) )
 }
 //var_dump( $Timestamps );die();
 $cacheTimestamp = $Timestamps['user-info-cache'];
-
+if ( ! $cacheTimestamp )
+    $cacheTimestamp = time();
 
 /*
 Clearing expired templateblock cache with purge 

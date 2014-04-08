@@ -8,6 +8,9 @@ Scripts[]=purge-outdated-template-cache.php
 
 [CronjobPart-expired_cache_maintenance]
 Scripts[]=purge-expired-template-cache.php
-Scripts[]=purge-expired-user-info-cache.php
+#Scripts[]=purge-expired-user-info-cache.php
+Scripts[]=purge-removed-files.php
 
+[CronjobPart-purge_removed_files]
+Scripts[]=purge-removed-files.php
 */ ?>

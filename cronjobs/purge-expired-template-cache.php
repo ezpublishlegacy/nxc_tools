@@ -5,66 +5,78 @@
  *
  */
 
+
+
 /**
  * Purge outdated template-block caches.
  */
 
 $limit = 500;
 #$ttl = 24 * 3600; // 24h
-$sleepSeconds = 2;
+$sleepSeconds = 1;
 
 nxcDBFilePurge::cliOutput(
     'Script options: ttl = '.(int)$ttl
           .', limit = '.(int)$limit
           .', sleep = '.(int)$sleepSeconds
 );
-$ini = eZINI::instance( 'nxc-tools.ini' );
-$expiryFile = $ini->variable( 'CacheClearSettings', 'ExpiryFile');
-
-$cacheFileHandler = eZClusterFileHandler::instance( $expiryFile );
-if ( $cacheFileHandler->fileExists( $cacheFileHandler->filePath ) )
-{
-     $expiryData =  $cacheFileHandler->fetch();
-    include( $cacheFileHandler->filePath );
-
-}
-//var_dump( $Timestamps );die();
-$cacheBlockTimestamp = $Timestamps['template-block-cache'];
-$viewCacheTimestamp = $Timestamps['content-view-cache'];
 
 /*
 Clearing expired templateblock cache with purge 
 */
-
+$cacheDir = eZSys::cacheDirectory();
 $whereClause = "
-    WHERE scope='template-block'
-        AND mtime < $cacheBlockTimestamp
-        AND mtime > 0";
+    WHERE name like \"". $cacheDir. "/template-block/%\"
+        AND mtime < %timestampPattern%";
 
-$query = array(
-    'count' => "SELECT count(*) as count FROM ezdbfile $whereClause",
-    'purge' => "DELETE FROM ezdbfile $whereClause LIMIT $limit"
+
+$ini = eZINI::instance( 'nxc-tools.ini' );
+$expiryFile = $ini->variable( 'CacheClearSettings', 'ExpiryFile');
+$reader = new nxcExpiryReader( $cacheDir . '/' . $expiryFile );
+$timestampObject = new nxcExpiryValue( $reader, 'template-block-cache' );
+
+
+$query = new nxcPurgeQuery( $timestampObject,
+                         "DELETE FROM ezdbfile $whereClause LIMIT $limit",
+                         "SELECT count(*) as count FROM ezdbfile $whereClause" );
+//var_dump( $query );
+
+nxcDBFilePurge::cliOutput(
+    'Script queries are :'
+          . $query['count']
+    . "\n" . $query['purge']
 );
+
 
 $stats = nxcDBFilePurge::execPurgeQuery( $query, $sleepSeconds, 'nxcDBFilePurge::printProgress' );
 
 nxcDBFilePurge::printStats( $stats );
 
+
+
 /*
-Clearing expired view cache with purge 
+Clearing expired view cache with purge
 */
+
+
+$timestampObject = new nxcExpiryValue( $reader, 'content-view-cache' );
 
 $whereClause = "
     WHERE scope='viewcache'
-        AND mtime < $viewCacheTimestamp";
+        AND mtime < %timestampPattern%";
 
-$query = array(
-    'count' => "SELECT count(*) as count FROM ezdbfile $whereClause",
-    'purge' => "DELETE FROM ezdbfile $whereClause LIMIT $limit"
+$query = new nxcPurgeQuery( $timestampObject,
+                         "DELETE FROM ezdbfile $whereClause LIMIT $limit",
+                         "SELECT count(*) as count FROM ezdbfile $whereClause" );
+
+nxcDBFilePurge::cliOutput(
+    'Script queries are :'
+          . $query['count']
+     . "\n" . $query['purge']
 );
 
 $stats = nxcDBFilePurge::execPurgeQuery( $query, $sleepSeconds, 'nxcDBFilePurge::printProgress' );
-nxcDBFilePurge::printStats( $stats );
 
+nxcDBFilePurge::printStats( $stats );
 
 ?>
